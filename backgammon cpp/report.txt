@@ -1,0 +1,7 @@
+So basicly I added a few things A texture manager 
+	* the issue with it is that the texture is returning as null for some odd reason.
+
+
+2.5.2021
+Player 1 || 2 if player == 
+	*use easy ws socket

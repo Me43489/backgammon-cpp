@@ -1,56 +1,53 @@
 /**********************************
        Implementation of Class game
 **********************************/
+#include "texturemanager.hpp"
+#include "texture_constants.hpp"
 #include "game.hpp"
+#include "display.hpp"
+#include <iostream>
+#include <iterator>
+#include <string.h>
 
-Game::Game(std::string title, int w, int h) {
+
+Game::Game(std::string title, int w, int h):event() {
 
     if (SDL_Init(SDL_INIT_EVERYTHING) != NULL) {
-        perror("SDL was unable to be initalized\n");
-        SDL_GetError();
-        exit(-1);
-    }
-
-    window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI);
-    if (window == NULL) {
-        perror("window was unable to be initalized\n");
-        SDL_GetError();
-        exit(-1);
-    }
-
-    renderer = SDL_CreateRenderer(window, -1, NULL);
-    if (renderer == NULL) {
-        perror("renderer was unable to be initalized\n");
-        SDL_GetError();
-        exit(-1);
-    }
-
-    surface = SDL_GetWindowSurface(window);
-    if (surface == NULL) {
-        perror("surface was unable to initalized\n");
-        SDL_GetError();
-        exit(-1);
-    }
-
+        std::cerr<< "SDL was unable to be initalized" << SDL_GetError() << std::endl;
+        running = false;
+        Game::quit();
+    }   
+    Display::Create(w, h);
+   
+    // Loads the Textures
+    TextureManager::Load("C:\\Users\\Me434\\source\\repos\\backgammon cpp\\Assets\\backgammon-board.png", BOARD);
+    TextureManager::Load("C:\\Users\\Me434\\source\\repos\\backgammon cpp\\Assets\\red-triangle-down.png", R_TRIANGLE_DOWN);
+    TextureManager::Load("C:\\Users\\Me434\\source\\repos\\backgammon cpp\\Assets\\red-triangle-up.png", R_TRIANGLE_UP);
+    TextureManager::Load("C:\\Users\\Me434\\source\\repos\\backgammon cpp\\Assets\\red-triangle-up.png", W_TRIANGLE_UP);
+    TextureManager::Load("C:\\Users\\Me434\\source\\repos\\backgammon cpp\\Assets\\red-triangle-up.png", W_TRIANGLE_DOWN);    
+    
 
     running = true;
 }
 
 void Game::render() {
+       
+    SDL_RenderClear(Display::GetRenderer());
+    SDL_SetRenderDrawColor(Display::GetRenderer(), 0, 0, 0, SDL_ALPHA_OPAQUE);
+    SDL_RenderClear(Display::GetRenderer());
+    SDL_SetRenderDrawColor(Display::GetRenderer(),255, 0, 0, SDL_ALPHA_OPAQUE);
+    
+    SDL_Rect Board_Dest = { 0,0,960,768 };
+    SDL_Rect Red_Triangle_Down = {36,24,73,300};
+   
+    Display::DrawTexture(TextureManager::Images[BOARD],Board_Dest);
+    Display::DrawTexture(TextureManager::Images[R_TRIANGLE_DOWN], Red_Triangle_Down);
 
-    /* SDL_Rect x;// h w x ,y
-     x.x = 0;
-     x.y = 0;
-     x.w = 1300;
-     x.h = 700;*/
-
-    SDL_RenderClear(renderer);
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-    SDL_RenderClear(renderer);
-    SDL_SetRenderDrawColor(renderer, 255, 0, 222, SDL_ALPHA_OPAQUE);
-
-
-    SDL_RenderPresent(renderer);
+    //TextureManager::draw(BOARD, board_dest::h,board_dest::w, board_dest::x, board_dest::y);
+    //TextureManager::draw(RED_CHIP, 100, 100, 100, 100);
+    //SDL_RenderCopy(renderer,TextureManager::images["Board"].data, &texture->src, &texture->dest);
+    //SDL_RenderCopy(renderer, texture->data, &texture->src, &texture->dest);
+    Display::Present();
 }
 
 void Game::update() {
@@ -68,19 +65,12 @@ void Game::run() {
     }
 }
 
-SDL_Renderer* Game::getRenderer() {
-    return renderer;
-}
+
 void Game::quit() {
     running = false;
-    //SDL_FreeSurface(surface);
-    SDL_DestroyWindow(window);
-    SDL_DestroyRenderer(renderer);
-    //SDL_DestroyTexture(texture);
 }
 
 /****************************
 STATIC MEMBERS OF CLASS GAME:
 *****************************/
 
-SDL_Renderer* Game::renderer = NULL;

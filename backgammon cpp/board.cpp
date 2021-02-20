@@ -3,11 +3,7 @@
 ******************************/
 #include "board.hpp"
 
-void Board::set() {
-
-
-}
-
-void Board::clear() {
+Board::Board() {
+	
 
 }

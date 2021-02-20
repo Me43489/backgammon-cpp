@@ -1,5 +1,5 @@
 /*****************************
-		Implentation of Space Class
+	Implentation of Space Class
 ******************************/
 #include "space.hpp"
 
